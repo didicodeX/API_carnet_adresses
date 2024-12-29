@@ -1,13 +1,14 @@
 const router = require('express').Router();
-const { getAllUsers, createUser, loginUser } = require('../controllers/user.controller');
+const { registerUser, loginUser, getProfile, getAllUsers } = require('../controllers/user.controller');
+const auth = require('../middlewares/auth');
 
-router.get('/', getAllUsers);
+// Routes publiques
+router.post('/register', registerUser); // Inscription
+router.post('/login', loginUser); // Connexion
 
+// Route protégée
+router.get('/me', auth, getProfile); // Récupérer les infos de l'utilisateur connecté
 
-router.post('/register', createUser);
-router.post('/login', loginUser);
-
-
-
+router.get("/", getAllUsers);
 
 module.exports = router;
