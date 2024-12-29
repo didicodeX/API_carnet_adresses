@@ -10,14 +10,16 @@ const createContact = async (req, res) => {
   }
 };
 
-const getAllContacts = async (req, res) => {
+async function getAllContacts(req, res) {
+  const id = req.user.userId; // Get userId from request parameters
+  console.log(id);
   try {
-    const contacts = await Contact.find();
+    const contacts = await Contact.find({ userId: id });
     res.status(200).json(contacts);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ message: "Error retrieving contacts", error });
   }
-};
+}
 
 const getContactById = catchAsync(async (req, res) => {
   const contact = await Contact.findById(req.params.id);
