@@ -48,7 +48,7 @@ const loginUser = async (req, res) => {
       secure: NODE_ENV === "production",
       sameSite: "none",
       domain: "carnet-adresses.vercel.app",
-      maxAge: 2 * 60 * 1000, // 2 minutes
+      maxAge: 15 * 60 * 1000, // 15 minutes
     });
     console.log("Cookie accessToken défini !");
     res.cookie("refreshToken", refreshToken, {
@@ -58,8 +58,9 @@ const loginUser = async (req, res) => {
       domain: "carnet-adresses.vercel.app",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 jours
     });
+    console.log("Cookie refreshToken défini !");
 
-    res.status(200).json({ message: "Connexion réussie !" }, accessToken, refreshToken);
+    res.status(200).json({ message: "Connexion réussie !" }, { accessToken: accessToken }, { refreshToken: refreshToken });
   } catch (err) {
     res.status(500).json({ message: "Erreur serveur", error: err.message });
   }
