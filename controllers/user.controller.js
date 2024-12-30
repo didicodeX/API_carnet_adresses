@@ -1,6 +1,7 @@
 const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const { JWT_SECRET, NODE_ENV } = process.env;
 
 const registerUser = async (req, res) => {
   try {
@@ -15,7 +16,7 @@ const registerUser = async (req, res) => {
     const user = await User.create({ name, email, password });
 
     // Créer le token
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
       expiresIn: "20s",
     });
 
@@ -40,37 +41,33 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ message: "Mot de passe incorrect." });
 
     // Créer le token
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const accessToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: "15m" });
 
     // Créer le refresh token
-    const refreshToken = jwt.sign(
-      { userId: user._id },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "7d",
-      }
-    );
+    const refreshToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: "7d" });
 
-    // Stockez le refresh token dans la base de données ou en mémoire
-    // (Assurez-vous d'avoir un modèle ou une méthode pour le faire)
-    user.refreshToken = refreshToken;
-    await user.save();
-
-    res.status(200).json({
-      message: "Utilisateur connecte avec succes.",
-      token,
-      refreshToken,
+    // Stocker les tokens dans les cookies
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 2 * 60 * 1000, // 2 minutes
     });
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 jours
+    });
+
+    res.status(200).json({ message: "Connexion réussie !" });
   } catch (err) {
-    res.status(500).json({ message: "Erreur serveur.", error: err.message });
+    res.status(500).json({ message: "Erreur serveur", error: err.message });
   }
 };
 
 const getProfile = async (req, res) => {
   try {
-    // Rechercher l'utilisateur dans la base de données (exclure les champs le mot de passe)
     const user = await User.findById(req.user.userId).select("-password");
     if (!user)
       return res.status(404).json({ message: "Utilisateur introuvable." });
@@ -94,26 +91,47 @@ const getAllUsers = async (req, res) => {
 };
 
 const refreshToken = async (req, res) => {
-  const { token } = req.body; // Récupérer le refresh token du corps de la requête
+  try {
+    const refreshToken = req.cookies.refreshToken; // Récupérer le refresh token depuis le cookie
 
-  if (!token) return res.sendStatus(401); // Unauthorized
+    if (!refreshToken) return res.status(401).json({ message: "Non autorisé." });
 
-  // Vérifiez le refresh token
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403); // Forbidden
+    // Vérifier le refresh token
+    jwt.verify(refreshToken, JWT_SECRET, async (err, user) => {
+      if (err) return res.status(403).json({ message: "Token invalide ou expiré." });
 
-    // Générer un nouveau access token
-    const newAccessToken = jwt.sign(
-      { userId: user.userId },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "1h",
+      // Vérifier si le token correspond à l'utilisateur
+      const dbUser = await User.findById(user.userId);
+      if (!dbUser || dbUser.refreshToken !== refreshToken) {
+        return res.status(403).json({ message: "Token invalide." });
       }
-    );
 
-    res.json({ accessToken: newAccessToken });
-  });
+      // Générer un nouveau access token
+      const newAccessToken = jwt.sign({ userId: user.userId }, JWT_SECRET, { expiresIn: "15m" });
+
+      // Réenvoyer le nouveau token dans un cookie
+      res.cookie("accessToken", newAccessToken, {
+        httpOnly: true,
+        secure: NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 2 * 60 * 1000, // 2 minutes
+      });
+
+      res.status(200).json({ message: "Token rafraîchi avec succès." });
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Erreur serveur", error: err.message });
+  }
 };
+
+// Ajoute cette route dans ton controller pour la déconnexion
+const logoutUser = (req, res) => {
+  res.clearCookie("accessToken", { httpOnly: true, secure: NODE_ENV === "production" });
+  res.clearCookie("refreshToken", { httpOnly: true, secure: NODE_ENV === "production" });
+  res.status(200).json({ message: "Déconnexion réussie !" });
+};
+
+
 
 module.exports = {
   registerUser,
@@ -121,4 +139,5 @@ module.exports = {
   getProfile,
   getAllUsers,
   refreshToken,
+  logoutUser,
 };
