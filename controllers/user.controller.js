@@ -53,7 +53,7 @@ const loginUser = async (req, res) => {
       secure: NODE_ENV === "production",
       sameSite: "none",
       domain: "carnet-adresses-50e2ff3ffe95.herokuapp.com",
-      maxAge: 15 * 60 * 1000, // 15 minutes
+      maxAge: 24 * 60 * 60 * 1000, // 1 jour
     });
     console.log("Cookie accessToken défini !");
     res.cookie("refreshToken", refreshToken, {
