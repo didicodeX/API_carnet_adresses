@@ -63,15 +63,21 @@ const loginUser = async (req, res) => {
 
 const getProfile = async (req, res) => {
   try {
+    console.log("ID utilisateur reçu : ", req.user.userId);
+
     const user = await User.findById(req.user.userId).select("-password");
-    if (!user)
+    if (!user) {
+      console.warn("Aucun utilisateur trouvé pour l'ID :", req.user.userId);
       return res.status(404).json({ message: "Utilisateur introuvable." });
+    }
 
     res.status(200).json(user);
   } catch (err) {
+    console.error("Erreur dans getProfile :", err); // Log complet
     res.status(500).json({ message: "Erreur serveur.", error: err.message });
   }
 };
+
 
 const getAllUsers = async (req, res) => {
   try {
