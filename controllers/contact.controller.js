@@ -1,5 +1,4 @@
 const Contact = require("../models/contact.model");
-const catchAsync = require("../helpers/catchAsync");
 
 const createContact = async (req, res) => {
   const { name, phone } = req.body;
@@ -26,13 +25,13 @@ async function getAllContacts(req, res) {
   }
 }
 
-const getContactById = catchAsync(async (req, res) => {
+const getContactById = async (req, res) => {
   const contact = await Contact.findOne({ _id: req.params.id, userId: req.user.userId });
   if (!contact) {
     return res.status(404).json({ success: false, error: "Contact not found" });
   }
   res.status(200).json({ success: true, data: contact });
-});
+};
 
 const updateContact = async (req, res) => {
   try {
