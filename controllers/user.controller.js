@@ -1,4 +1,3 @@
-const express = require("express");
 const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
@@ -17,7 +16,7 @@ const registerUser = async (req, res) => {
 
     // Créer le token
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "2h",
+      expiresIn: "20s",
     });
 
     res.status(201).json({ message: "Utilisateur cree avec succes.", token });
@@ -42,7 +41,7 @@ const loginUser = async (req, res) => {
 
     // Créer le token
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "2h",
+      expiresIn: "20s",
     });
 
     // Créer le refresh token

@@ -15,4 +15,12 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
+userSchema.pre("findOneAndUpdate", async function (next) {
+  if (this.getUpdate().password) {
+    this.getUpdate().password = await bcrypt.hash(this.getUpdate().password, 10);
+  }
+  next();
+});
+
+
 module.exports = mongoose.model("User", userSchema);

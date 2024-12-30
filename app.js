@@ -4,12 +4,12 @@ const cors = require("cors");
 const apiRoutes = require("./routes");
 const app = express();
 
-// middlewares cors
-app.use(
-  cors({
-    origin: "*",
-  })
-);
+// Configurer CORS
+app.use(cors({
+  origin: "http://127.0.0.1:5500", // Remplace par l'URL de ton frontend
+  methods: ["GET", "POST", "PUT", "DELETE"], // Méthodes autorisées
+  allowedHeaders: ["Content-Type", "Authorization"], // Headers autorisés
+}));
 
 // Middlewares
 app.use(bodyParser.json()); // Analyse les requêtes JSON
