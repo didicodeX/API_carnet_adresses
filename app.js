@@ -6,9 +6,10 @@ const app = express();
 
 // Configurer CORS
 app.use(cors({
-  origin: "http://127.0.0.1:5500", // Remplace par l'URL de ton frontend
+  origin: "https://carnet-adresses.vercel.app/" || "http://127.0.0.1:5500", // Adresse du client
   methods: ["GET", "POST", "PUT", "DELETE"], // Méthodes autorisées
   allowedHeaders: ["Content-Type", "Authorization"], // Headers autorisés
+  credentials: true, // Autorise les cookies ou les headers sécurisés
 }));
 
 // Middlewares
