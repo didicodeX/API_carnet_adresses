@@ -45,9 +45,19 @@ const loginUser = async (req, res) => {
       expiresIn: "2h",
     });
 
+    // Créer le refresh token
+    const refreshToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    // Stockez le refresh token dans la base de données ou en mémoire
+    // (Assurez-vous d'avoir un modèle ou une méthode pour le faire)
+    user.refreshToken = refreshToken;
+    await user.save();
+
     res
       .status(200)
-      .json({ message: "Utilisateur connecte avec succes.", token });
+      .json({ message: "Utilisateur connecte avec succes.", token, refreshToken });
   } catch (err) {
     res.status(500).json({ message: "Erreur serveur.", error: err.message });
   }
@@ -77,4 +87,23 @@ const getAllUsers = async (req, res) => {
     res.status(500).json({ message: "Error retrieving users" });
   }
 };
-module.exports = { registerUser, loginUser, getProfile, getAllUsers };
+
+const refreshToken = async (req, res) => {
+  const { token } = req.body; // Récupérer le refresh token du corps de la requête
+
+  if (!token) return res.sendStatus(401); // Unauthorized
+
+  // Vérifiez le refresh token
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403); // Forbidden
+
+    // Générer un nouveau access token
+    const newAccessToken = jwt.sign({ userId: user.userId }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    res.json({ accessToken: newAccessToken });
+  });
+};
+
+module.exports = { registerUser, loginUser, getProfile, getAllUsers, refreshToken };

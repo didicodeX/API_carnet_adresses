@@ -15,9 +15,10 @@ const auth = async (req, res, next) => {
     req.user = decodedToken; // Attacher les infos utilisateur à la requête
     next(); // Passer à la suite si tout est OK
   } catch (err) {
+    if (err) return res.status(403).json({ message: 'Token expiré, veuillez renouveler.' }); // Forbidden
     res
       .status(500)
-      .json({ message: "Token invalide ou expiré.", error: err.message });
+      .json({ message: "Token invalide.", error: err.message });
   }
 };
 
