@@ -52,7 +52,7 @@ const loginUser = async (req, res) => {
       httpOnly: true,
       secure: NODE_ENV === "production",
       sameSite: "none",
-      domain: "carnet-adresses.vercel.app",
+      domain: "carnet-adresses-50e2ff3ffe95.herokuapp.com",
       maxAge: 15 * 60 * 1000, // 15 minutes
     });
     console.log("Cookie accessToken défini !");
@@ -60,7 +60,7 @@ const loginUser = async (req, res) => {
       httpOnly: true,
       secure: NODE_ENV === "production",
       sameSite: "none",
-      domain: "carnet-adresses.vercel.app",
+      domain: "carnet-adresses-50e2ff3ffe95.herokuapp.com",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 jours
     });
     console.log("Cookie refreshToken défini !");
