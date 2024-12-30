@@ -1,4 +1,5 @@
 const express = require("express");
+const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const apiRoutes = require("./routes");
@@ -8,12 +9,13 @@ const app = express();
 app.use(cors({
   origin: "https://carnet-adresses.vercel.app" || "http://127.0.0.1:5500", // Adresse du client
   methods: ["GET", "POST", "PUT", "DELETE"], // Méthodes autorisées
-  allowedHeaders: ["Content-Type", "Authorization"], // Headers autorisés
-  credentials: true, // Autorise les cookies ou les headers sécurisés
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
 }));
 
 // Middlewares
-app.use(bodyParser.json()); // Analyse les requêtes JSON
+app.use(bodyParser.json());
+app.use(cookieParser());
 
 // Routes
 app.use("/api", apiRoutes);
