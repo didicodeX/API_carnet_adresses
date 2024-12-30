@@ -41,22 +41,28 @@ const loginUser = async (req, res) => {
 
     // Créer le token
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "20s",
+      expiresIn: "1h",
     });
 
     // Créer le refresh token
-    const refreshToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
-    });
+    const refreshToken = jwt.sign(
+      { userId: user._id },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
 
     // Stockez le refresh token dans la base de données ou en mémoire
     // (Assurez-vous d'avoir un modèle ou une méthode pour le faire)
     user.refreshToken = refreshToken;
     await user.save();
 
-    res
-      .status(200)
-      .json({ message: "Utilisateur connecte avec succes.", token, refreshToken });
+    res.status(200).json({
+      message: "Utilisateur connecte avec succes.",
+      token,
+      refreshToken,
+    });
   } catch (err) {
     res.status(500).json({ message: "Erreur serveur.", error: err.message });
   }
@@ -97,12 +103,22 @@ const refreshToken = async (req, res) => {
     if (err) return res.sendStatus(403); // Forbidden
 
     // Générer un nouveau access token
-    const newAccessToken = jwt.sign({ userId: user.userId }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const newAccessToken = jwt.sign(
+      { userId: user.userId },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
 
     res.json({ accessToken: newAccessToken });
   });
 };
 
-module.exports = { registerUser, loginUser, getProfile, getAllUsers, refreshToken };
+module.exports = {
+  registerUser,
+  loginUser,
+  getProfile,
+  getAllUsers,
+  refreshToken,
+};
