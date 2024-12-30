@@ -46,12 +46,14 @@ const loginUser = async (req, res) => {
       httpOnly: true,
       secure: NODE_ENV === "production",
       sameSite: "strict",
+      domain: "carnet-adresses.vercel.app",
       maxAge: 2 * 60 * 1000, // 2 minutes
     });
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: NODE_ENV === "production",
       sameSite: "strict",
+      domain: "carnet-adresses.vercel.app",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 jours
     });
 
