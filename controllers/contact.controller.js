@@ -2,68 +2,63 @@ const Contact = require("../models/contact.model");
 const catchAsync = require("../helpers/catchAsync");
 
 const createContact = async (req, res) => {
+  const { name, phone } = req.body;
+  if (!name || !phone) {
+    return res.status(400).json({ success: false, error: "Name and phone are required" });
+  }
   try {
-    const contact = await Contact.create(req.body);
-    res.status(200).json(contact);
+    const contact = await Contact.create({ ...req.body, userId: req.user.userId });
+    res.status(200).json({ success: true, data: contact });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ success: false, error: error.message });
   }
 };
 
 async function getAllContacts(req, res) {
-  const id = req.user.userId; // Get userId from request parameters
-  console.log(id);
   try {
-    const contacts = await Contact.find({ userId: id });
-    res.status(200).json(contacts);
+    const contacts = await Contact.find({ userId: req.user.userId });
+    if (contacts.length === 0) {
+      return res.status(200).json({ success: true, message: "Aucun contact trouvé." });
+    }
+    res.status(200).json({ success: true, data: contacts });
   } catch (error) {
-    res.status(500).json({ message: "Error retrieving contacts", error });
+    res.status(500).json({ success: false, message: "Erreur lors de la récupération des contacts", error });
   }
 }
 
 const getContactById = catchAsync(async (req, res) => {
-  const contact = await Contact.findById(req.params.id);
+  const contact = await Contact.findOne({ _id: req.params.id, userId: req.user.userId });
   if (!contact) {
-    return res.status(404).json({ error: "Contact not found" });
+    return res.status(404).json({ success: false, error: "Contact not found" });
   }
-  res.status(200).json(contact);
+  res.status(200).json({ success: true, data: contact });
 });
-
-// const getContactById = async (req, res) => {
-//   try {
-//     const contact = await Contact.findById(req.params.id);
-//     if (!contact) {
-//       return res.status(404).json({ error: "Contact not found" });
-//     }
-//     res.status(200).json(contact);
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// };
 
 const updateContact = async (req, res) => {
   try {
-    const contact = await Contact.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const contact = await Contact.findOneAndUpdate(
+      { _id: req.params.id, userId: req.user.userId },
+      req.body,
+      { new: true }
+    );
     if (!contact) {
-      return res.status(404).json({ error: "Contact not found" });
+      return res.status(404).json({ success: false, error: "Contact not found" });
     }
-    res.status(200).json(contact);
+    res.status(200).json({ success: true, data: contact });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ success: false, error: error.message });
   }
 };
 
 const deleteContact = async (req, res) => {
   try {
-    const contact = await Contact.findByIdAndDelete(req.params.id);
+    const contact = await Contact.findOneAndDelete({ _id: req.params.id, userId: req.user.userId });
     if (!contact) {
-      return res.status(404).json({ error: "Contact not found" });
+      return res.status(404).json({ success: false, error: "Contact not found" });
     }
-    res.status(200).json(contact);
+    res.status(200).json({ success: true, data: contact });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ success: false, error: error.message });
   }
 };
 
@@ -74,3 +69,4 @@ module.exports = {
   updateContact,
   deleteContact,
 };
+
