@@ -60,7 +60,7 @@ const loginUser = async (req, res) => {
     });
     console.log("Cookie refreshToken défini !");
 
-    res.status(200).json({ message: "Connexion réussie !" }, { accessToken: accessToken }, { refreshToken: refreshToken });
+    res.status(200).json({ message: "Connexion réussie !", accessToken, refreshToken });
   } catch (err) {
     res.status(500).json({ message: "Erreur serveur", error: err.message });
   }
