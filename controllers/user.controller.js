@@ -1,6 +1,7 @@
 const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+require("dotenv").config();
 const { JWT_SECRET, NODE_ENV } = process.env;
 
 const registerUser = async (req, res) => {
@@ -36,10 +37,14 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ message: "Mot de passe incorrect." });
 
     // Créer le token
-    const accessToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: "15m" });
+    const accessToken = jwt.sign({ userId: user._id }, JWT_SECRET, {
+      expiresIn: "15m",
+    });
     console.log("Token accessToken défini !", accessToken);
     // Créer le refresh token
-    const refreshToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: "7d" });
+    const refreshToken = jwt.sign({ userId: user._id }, JWT_SECRET, {
+      expiresIn: "7d",
+    });
     console.log("Token refreshToken défini !", refreshToken);
 
     // Stocker les tokens dans les cookies
@@ -60,7 +65,9 @@ const loginUser = async (req, res) => {
     });
     console.log("Cookie refreshToken défini !");
 
-    res.status(200).json({ message: "Connexion réussie !", accessToken, refreshToken });
+    res
+      .status(200)
+      .json({ message: "Connexion réussie !", accessToken, refreshToken });
   } catch (err) {
     res.status(500).json({ message: "Erreur serveur", error: err.message });
   }
@@ -83,7 +90,6 @@ const getProfile = async (req, res) => {
   }
 };
 
-
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.find().select("-password");
@@ -100,11 +106,13 @@ const refreshToken = async (req, res) => {
   try {
     const refreshToken = req.cookies.refreshToken; // Récupérer le refresh token depuis le cookie
 
-    if (!refreshToken) return res.status(401).json({ message: "Non autorisé." });
+    if (!refreshToken)
+      return res.status(401).json({ message: "Non autorisé." });
 
     // Vérifier le refresh token
     jwt.verify(refreshToken, JWT_SECRET, async (err, user) => {
-      if (err) return res.status(403).json({ message: "Token invalide ou expiré." });
+      if (err)
+        return res.status(403).json({ message: "Token invalide ou expiré." });
 
       // Vérifier si le token correspond à l'utilisateur
       const dbUser = await User.findById(user.userId);
@@ -113,7 +121,9 @@ const refreshToken = async (req, res) => {
       }
 
       // Générer un nouveau access token
-      const newAccessToken = jwt.sign({ userId: user.userId }, JWT_SECRET, { expiresIn: "15m" });
+      const newAccessToken = jwt.sign({ userId: user.userId }, JWT_SECRET, {
+        expiresIn: "15m",
+      });
 
       // Réenvoyer le nouveau token dans un cookie
       res.cookie("accessToken", newAccessToken, {
@@ -132,12 +142,16 @@ const refreshToken = async (req, res) => {
 
 // Ajoute cette route dans ton controller pour la déconnexion
 const logoutUser = (req, res) => {
-  res.clearCookie("accessToken", { httpOnly: true, secure: NODE_ENV === "production" });
-  res.clearCookie("refreshToken", { httpOnly: true, secure: NODE_ENV === "production" });
+  res.clearCookie("accessToken", {
+    httpOnly: true,
+    secure: NODE_ENV === "production",
+  });
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: NODE_ENV === "production",
+  });
   res.status(200).json({ message: "Déconnexion réussie !" });
 };
-
-
 
 module.exports = {
   registerUser,
