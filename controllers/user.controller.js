@@ -37,9 +37,10 @@ const loginUser = async (req, res) => {
 
     // Créer le token
     const accessToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: "15m" });
-
+    console.log("Token accessToken défini !", accessToken);
     // Créer le refresh token
     const refreshToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: "7d" });
+    console.log("Token refreshToken défini !", refreshToken);
 
     // Stocker les tokens dans les cookies
     res.cookie("accessToken", accessToken, {
