@@ -11,6 +11,11 @@ router.post('/refresh-token', refreshToken); // Nouvelle route pour renouveler l
 // Route protégée
 router.get('/me', authenticateUser, getProfile); // Récupérer les infos de l'utilisateur connecté
 
+router.get("/test-cookies", (req, res) => {
+  console.log("Cookies reçus :", req.cookies);
+  res.status(200).json(req.cookies);
+});
+
 router.get("/", getAllUsers);
 
 module.exports = router;
