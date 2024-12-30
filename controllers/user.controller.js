@@ -45,14 +45,15 @@ const loginUser = async (req, res) => {
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "none",
       domain: "carnet-adresses.vercel.app",
       maxAge: 2 * 60 * 1000, // 2 minutes
     });
+    console.log("Cookie accessToken défini !");
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "none",
       domain: "carnet-adresses.vercel.app",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 jours
     });
