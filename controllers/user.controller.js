@@ -141,34 +141,32 @@ const refreshToken = async (req, res) => {
   }
 };
 
+// Ajoute cette route dans ton controller pour la déconnexion
 const logoutUser = async (req, res) => {
   try {
-    // Supprime le cookie accessToken
-    res.clearCookie("accessToken", {
+    res.cookie("accessToken", "", {
       httpOnly: true,
       secure: NODE_ENV === "production",
-      sameSite: "none",
-      domain: "carnet-adresses.vercel.app", // Assure-toi que le domaine correspond à celui défini pour les cookies
+      sameSite: "None",
+      domain: "carnet-adresses-50e2ff3ffe95.herokuapp.com",
+      maxAge: 0, // Expire immédiatement
     });
 
-    // Supprime le cookie refreshToken
-    res.clearCookie("refreshToken", {
+    res.cookie("refreshToken", "", {
       httpOnly: true,
       secure: NODE_ENV === "production",
-      sameSite: "none",
-      domain: "carnet-adresses.vercel.app", // Assure-toi que le domaine correspond à celui défini pour les cookies
+      sameSite: "None",
+      domain: "carnet-adresses-50e2ff3ffe95.herokuapp.com",
+      maxAge: 0, // Expire immédiatement
     });
+    // res.clearCookie("accessToken");
+    // res.clearCookie("refreshToken");
 
     res.status(200).json({ success: true, message: "Déconnexion réussie." });
   } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: "Erreur lors de la déconnexion.",
-      error: err.message,
-    });
+    res.status(500).json({ success: false, message: "Erreur lors de la déconnexion.", error: err.message });
   }
 };
-
 
 
 module.exports = {
