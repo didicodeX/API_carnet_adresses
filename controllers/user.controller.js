@@ -51,7 +51,7 @@ const loginUser = async (req, res) => {
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: NODE_ENV === "production",
-      sameSite: "none",
+      sameSite: "None",
       domain: "carnet-adresses-50e2ff3ffe95.herokuapp.com",
       maxAge: 24 * 60 * 60 * 1000, // 1 jour
     });
@@ -59,7 +59,7 @@ const loginUser = async (req, res) => {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: NODE_ENV === "production",
-      sameSite: "none",
+      sameSite: "None",
       domain: "carnet-adresses-50e2ff3ffe95.herokuapp.com",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 jours
     });
@@ -129,7 +129,7 @@ const refreshToken = async (req, res) => {
       res.cookie("accessToken", newAccessToken, {
         httpOnly: true,
         secure: NODE_ENV === "production",
-        sameSite: "strict",
+        sameSite: "None",
         maxAge: 2 * 60 * 1000, // 2 minutes
       });
 
@@ -142,16 +142,27 @@ const refreshToken = async (req, res) => {
 
 // Ajoute cette route dans ton controller pour la déconnexion
 const logoutUser = (req, res) => {
-  res.clearCookie("accessToken", {
-    httpOnly: true,
-    secure: NODE_ENV === "production",
-  });
-  res.clearCookie("refreshToken", {
-    httpOnly: true,
-    secure: NODE_ENV === "production",
-  });
-  res.status(200).json({ message: "Déconnexion réussie !" });
+  try {
+    res.cookie("accessToken", "", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "None",
+      maxAge: 0, // Expire immédiatement
+    });
+
+    res.cookie("refreshToken", "", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "None",
+      maxAge: 0, // Expire immédiatement
+    });
+
+    res.status(200).json({ success: true, message: "Déconnexion réussie." });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Erreur lors de la déconnexion.", error: err.message });
+  }
 };
+
 
 module.exports = {
   registerUser,
