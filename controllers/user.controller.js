@@ -141,7 +141,7 @@ const refreshToken = async (req, res) => {
 };
 
 // Ajoute cette route dans ton controller pour la déconnexion
-const logoutUser = (req, res) => {
+const logoutUser = async (req, res) => {
   try {
     res.cookie("accessToken", "", {
       httpOnly: true,
