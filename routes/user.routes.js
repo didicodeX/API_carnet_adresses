@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { registerUser, loginUser, getProfile, getAllUsers, refreshToken } = require('../controllers/user.controller');
+const { registerUser, loginUser, getProfile, getAllUsers, refreshToken, logoutUser } = require('../controllers/user.controller');
 const authenticateUser = require('../middlewares/auth.middleware');
 
 
@@ -7,6 +7,7 @@ const authenticateUser = require('../middlewares/auth.middleware');
 router.post('/register', registerUser); // Inscription
 router.post('/login', loginUser); // Connexion
 router.post('/refresh-token', refreshToken); // Nouvelle route pour renouveler le token
+router.post('/logout', authenticateUser, logoutUser);
 
 // Route protégée
 router.get('/me', authenticateUser, getProfile); // Récupérer les infos de l'utilisateur connecté
