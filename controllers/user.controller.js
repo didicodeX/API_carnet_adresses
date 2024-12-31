@@ -144,8 +144,19 @@ const refreshToken = async (req, res) => {
 // Ajoute cette route dans ton controller pour la déconnexion
 const logoutUser = async (req, res) => {
   try {
-    res.clearCookie("accessToken");
-    res.clearCookie("refreshToken");
+    // Suppression des cookies avec les mêmes options qu'à la création
+    res.clearCookie("accessToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "None",
+    });
+
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "None",
+    });
+
     res.status(200).json({ success: true, message: "Déconnexion réussie." });
   } catch (err) {
     res.status(500).json({ success: false, message: "Erreur lors de la déconnexion.", error: err.message });
