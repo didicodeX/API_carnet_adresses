@@ -130,6 +130,7 @@ const refreshToken = async (req, res) => {
         httpOnly: true,
         secure: NODE_ENV === "production",
         sameSite: "None",
+        domain: "carnet-adresses-50e2ff3ffe95.herokuapp.com",
         maxAge: 2 * 60 * 1000, // 2 minutes
       });
 
@@ -147,6 +148,7 @@ const logoutUser = async (req, res) => {
       httpOnly: true,
       secure: NODE_ENV === "production",
       sameSite: "None",
+      domain: "carnet-adresses-50e2ff3ffe95.herokuapp.com",
       maxAge: 0, // Expire immédiatement
     });
 
@@ -154,6 +156,7 @@ const logoutUser = async (req, res) => {
       httpOnly: true,
       secure: NODE_ENV === "production",
       sameSite: "None",
+      domain: "carnet-adresses-50e2ff3ffe95.herokuapp.com",
       maxAge: 0, // Expire immédiatement
     });
 
