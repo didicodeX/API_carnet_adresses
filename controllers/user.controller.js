@@ -145,14 +145,14 @@ const logoutUser = (req, res) => {
   try {
     res.cookie("accessToken", "", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: NODE_ENV === "production",
       sameSite: "None",
       maxAge: 0, // Expire immédiatement
     });
 
     res.cookie("refreshToken", "", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: NODE_ENV === "production",
       sameSite: "None",
       maxAge: 0, // Expire immédiatement
     });
