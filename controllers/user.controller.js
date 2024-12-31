@@ -144,18 +144,23 @@ const refreshToken = async (req, res) => {
 // Ajoute cette route dans ton controller pour la déconnexion
 const logoutUser = async (req, res) => {
   try {
-    // Suppression des cookies avec les mêmes options qu'à la création
-    res.clearCookie("accessToken", {
+    res.cookie("accessToken", "", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: NODE_ENV === "production",
       sameSite: "None",
+      domain: "carnet-adresses-50e2ff3ffe95.herokuapp.com",
+      maxAge: -1, // Expire immédiatement
     });
 
-    res.clearCookie("refreshToken", {
+    res.cookie("refreshToken", "", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: NODE_ENV === "production",
       sameSite: "None",
+      domain: "carnet-adresses-50e2ff3ffe95.herokuapp.com",
+      maxAge: -1, // Expire immédiatement
     });
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
 
     res.status(200).json({ success: true, message: "Déconnexion réussie." });
   } catch (err) {
