@@ -149,7 +149,7 @@ const logoutUser = async (req, res) => {
       secure: NODE_ENV === "production",
       sameSite: "None",
       domain: "carnet-adresses-50e2ff3ffe95.herokuapp.com",
-      maxAge: -1, // Expire immédiatement
+      maxAge: 0, // Expire immédiatement
     });
 
     res.cookie("refreshToken", "", {
@@ -157,7 +157,7 @@ const logoutUser = async (req, res) => {
       secure: NODE_ENV === "production",
       sameSite: "None",
       domain: "carnet-adresses-50e2ff3ffe95.herokuapp.com",
-      maxAge: -1, // Expire immédiatement
+      maxAge: 0, // Expire immédiatement
     });
     res.clearCookie("accessToken");
     res.clearCookie("refreshToken");
