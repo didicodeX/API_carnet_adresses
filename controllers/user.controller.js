@@ -159,8 +159,6 @@ const logoutUser = async (req, res) => {
       domain: "carnet-adresses-50e2ff3ffe95.herokuapp.com",
       maxAge: 0, // Expire immédiatement
     });
-    // res.clearCookie("accessToken");
-    // res.clearCookie("refreshToken");
 
     res.status(200).json({ success: true, message: "Déconnexion réussie." });
   } catch (err) {
