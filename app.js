@@ -24,6 +24,7 @@ app.use(cors({
 // Middlewares
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(express.json()); 
 
 // Routes
 app.use(apiRoutes);
