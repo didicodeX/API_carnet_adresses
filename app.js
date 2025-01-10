@@ -1,17 +1,25 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
-const cors = require("cors");
 const apiRoutes = require("./routes");
 const app = express();
 
-// Configurer CORS
-app.use(cors({
-  // origin: "http://myaddressesbook.com
+const cors = require('cors');
 
-  origin: "https://myaddressesbook.com",
-  credentials: true,
+// Configuration CORS
+const allowedOrigins = ['https://myaddressesbook.com', 'https://www.myaddressesbook.com'];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true // Si tu utilises des cookies ou des tokens
 }));
+
 
 // Middlewares
 app.use(bodyParser.json());
