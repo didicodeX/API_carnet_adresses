@@ -7,6 +7,8 @@ const app = express();
 
 // Configurer CORS
 app.use(cors({
+  // origin: "http://myaddressesbook.com
+
   origin: "https://carnet-adresses.vercel.app",
   credentials: true,
 }));
@@ -17,6 +19,10 @@ app.use(cookieParser());
 
 // Routes
 app.use("/api", apiRoutes);
+
+
+// Importation de Swagger
+require("./doc/swagger")(app);
 
 // Middleware de base pour gérer les erreurs 404
 app.use((req, res, next) => {
