@@ -12,11 +12,11 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: 'https://api.myaddressesbook.com/api', // Remplace par ton URL
+        url: 'https://api.myaddressesbook.com', // Remplace par ton URL
         description: 'Production server',
       },
       {
-        url: 'http://localhost:3000/api', // Remplace par ton URL
+        url: 'http://localhost:3000', // Remplace par ton URL
         description: 'Development server',
       }
     ],
@@ -27,6 +27,6 @@ const swaggerOptions = {
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
 
 module.exports = (app) => {
-  app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-  console.log('Swagger disponible sur http://localhost:3000/api');
+  app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  console.log('Swagger disponible sur http://localhost:3000');
 };
