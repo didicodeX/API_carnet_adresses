@@ -12,7 +12,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: 'https://api.myaddressesbook.com', // Remplace par ton URL
+        url: 'https://api.myaddressesbook.com/docs', // Remplace par ton URL
         description: 'Production server',
       },
       {
