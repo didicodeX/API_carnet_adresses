@@ -9,7 +9,7 @@ const app = express();
 app.use(cors({
   // origin: "http://myaddressesbook.com
 
-  origin: "https://carnet-adresses.vercel.app",
+  origin: "https://myaddressesbook.com",
   credentials: true,
 }));
 
@@ -19,7 +19,6 @@ app.use(cookieParser());
 
 // Routes
 app.use("/api", apiRoutes);
-
 
 // Importation de Swagger
 require("./doc/swagger")(app);
