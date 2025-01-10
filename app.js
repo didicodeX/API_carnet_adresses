@@ -7,7 +7,7 @@ const app = express();
 const cors = require('cors');
 
 // Configuration CORS
-const allowedOrigins = ['https://myaddressesbook.com', 'https://www.myaddressesbook.com'];
+const allowedOrigins = ['https://myaddressesbook.com', 'https://www.myaddressesbook.com', "https://api.myaddressesbook.com", "https://myaddressesbook.com/docs"];
 
 app.use(cors({
   origin: function (origin, callback) {
@@ -24,7 +24,7 @@ app.use(cors({
 // Middlewares
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(express.json()); 
+app.use(express.json());
 
 // Routes
 app.use(apiRoutes);
