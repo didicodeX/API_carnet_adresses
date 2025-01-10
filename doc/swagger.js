@@ -25,7 +25,7 @@ const swaggerOptions = {
 };
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
-
+console.log(JSON.stringify(swaggerSpec, null, 2)); 
 module.exports = (app) => {
   app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
   console.log('Swagger disponible sur http://localhost:3000');
