@@ -26,7 +26,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 // Routes
-app.use("/api", apiRoutes);
+app.use(apiRoutes);
 
 // Importation de Swagger
 require("./doc/swagger")(app);
