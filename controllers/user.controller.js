@@ -1,11 +1,9 @@
 const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-// require("dotenv").config();
 
 const { JWT_SECRET, NODE_ENV } = process.env;
 const domain = NODE_ENV === 'production' ? 'api.myaddressesbook.com' : 'localhost';
-
 
 const registerUser = async (req, res) => {
     try {
