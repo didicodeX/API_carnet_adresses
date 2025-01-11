@@ -1,15 +1,16 @@
-const dotenv = require('dotenv');
-const app = require('./app');
-const connectDB = require('./config/database.config');
-
 // Charger les variables d'environnement
-dotenv.config();
+require("dotenv").config(); 
+
+// Lancer l'application
+const app = require('./app');
 
 // Connecter la base de données
-connectDB();
+require('./config/database.config')();
+
 
 // Lancer le serveur
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Documentation Swagger : http://localhost:${PORT}/docs`);
 });
