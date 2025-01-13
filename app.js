@@ -11,7 +11,7 @@ const cors = require('cors');
 
 // mon api heroku doit acepter les domaines localhost et myaddressesbook.com
 app.use(cors({
-  origin: ["http://localhost:5173/", "https://myaddressesbook.com", "http://127.0.0.1:5500"], // Frontend local + production
+  origin: ["http://localhost:5173/", "https://www.myaddressesbook.com/", "http://127.0.0.1:5500"], // Frontend local + production
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Méthodes autorisées
   allowedHeaders: ['Content-Type', 'Authorization'], // Headers autorisés
   credentials: true // Si tu utilises des cookies
