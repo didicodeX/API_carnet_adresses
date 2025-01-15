@@ -39,7 +39,7 @@ const loginUser = async (req, res) => {
 
 		// Créer le token
 		const accessToken = jwt.sign({ userId: user._id }, JWT_SECRET, {
-			expiresIn: "15m",
+			expiresIn: "24h",
 		});
 		console.log("Token accessToken défini !", accessToken);
 		// Créer le refresh token
@@ -68,7 +68,7 @@ const loginUser = async (req, res) => {
 
 		res
 			.status(200)
-			.json({ message: "Connexion réussie !", accessToken, refreshToken });
+			.json({ message: "Connexion réussie !", accessToken, refreshToken, user: user });
 	} catch (err) {
 		res.status(500).json({ message: "Erreur serveur", error: err.message });
 	}
@@ -123,16 +123,16 @@ const refreshToken = async (req, res) => {
 
 			// Générer un nouveau access token
 			const newAccessToken = jwt.sign({ userId: user.userId }, JWT_SECRET, {
-				expiresIn: "15m",
+				expiresIn: "24h",
 			});
 
 			// Réenvoyer le nouveau token dans un cookie
 			res.cookie("accessToken", newAccessToken, {
 				httpOnly: true,
-				secure: NODE_ENV === "production",
+				secure: true,
 				sameSite: "None",
 				domain,
-				maxAge: 2 * 60 * 1000, // 2 minutes
+				maxAge: 24 * 60 * 60 * 1000, // 1 jour
 			});
 
 			res.status(200).json({ message: "Token rafraîchi avec succès." });
@@ -146,8 +146,8 @@ const refreshToken = async (req, res) => {
 // je doit avoir une requete delete /logout en non une requete post
 const logoutUser = (req, res) => {
 	try {
-			res.clearCookie("accessToken");
-			res.clearCookie("refreshToken");
+			res.clearCookie("accessToken", { httpOnly: true, secure: true });
+			res.clearCookie("refreshToken", { httpOnly: true, secure: true });
 			res.status(200).json({ success: true, message: "Déconnexion réussie." });
 	} catch (err) {
 			res.status(500).json({ success: false, message: "Erreur lors de la déconnexion.", error: err.message });
