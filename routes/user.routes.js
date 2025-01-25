@@ -6,7 +6,7 @@ const authenticateUser = require('../middlewares/auth.middleware');
 router.post('/register', registerUser); // Inscription
 router.post('/login', loginUser); // Connexion
 router.post('/refresh-token', refreshToken); // Nouvelle route pour renouveler le token
-router.post('/logout', authenticateUser, logoutUser);
+router.delete('/logout', authenticateUser, logoutUser);
 
 // Route protégée
 router.get('/me', authenticateUser, getProfile); // Récupérer les infos de l'utilisateur connecté

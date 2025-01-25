@@ -1,0 +1,93 @@
+{
+  "/contacts": {
+    "get": {
+      "summary": "Récupérer tous les contacts d'un utilisateur connecté",
+      "tags": ["Contacts"],
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "required": true,
+          "description": "Token d'authentification au format Bearer",
+          "schema": {
+            "type": "string",
+            "example": "Bearer your_token_here"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Liste des contacts",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "61a5b3f58e8b9f001c8d4567"
+                    },
+                    "name": { "type": "string", "example": "Jane Doe" },
+                    "email": {
+                      "type": "string",
+                      "example": "jane.doe@example.com"
+                    },
+                    "phone": { "type": "string", "example": "555-1234" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": { "description": "Non autorisé" }
+      }
+    },
+    "post": {
+      "tags": ["Contacts"],
+      "summary": "Creer un article",
+      "description": "Creer un article en donnant toutes les informations necessaires",
+      "operationId": "createPost",
+      "requestBody": {
+        "description": "contenu complet d'un article",
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user": {
+                  "type": "string",
+                  "format": "iri-reference",
+                  "default": "/users/{id}"
+                }
+              },
+              "required": ["title", "content", "user"],
+              "example": {
+                "id": 1,
+                "title": "Porquoi apprendre le css en 2025",
+                "futuredImage": "post1.png",
+                "user": "/users/1",
+                "publishedDate": "17/04/2025",
+                "content": "En 2025 apprendre le css peut paraitre vue l'avenement de l'IA"
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "Article creer avec success",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Contacts"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
