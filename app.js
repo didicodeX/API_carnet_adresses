@@ -2,7 +2,7 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const apiRoutes = require("./routes");
-const swaggerSetup = require("./swagger");
+const swaggerSetup = require("./swagger/");
 const app = express();
 
 const cors = require('cors');
