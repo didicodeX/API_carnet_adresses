@@ -211,39 +211,23 @@
       },
       "post": {
         "tags": ["Contacts"],
-        "summary": "Creer un article",
-        "description": "Creer un article en donnant toutes les informations necessaires",
-        "operationId": "createPost",
+        "summary": "Creer un contact",
+        "description": "Creer un contact en donnant toutes les informations necessaires",
+        "operationId": "createContact",
         "requestBody": {
-          "description": "contenu complet d'un article",
+          "description": "contenu complet d'un contact",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "user": {
-                    "type": "string",
-                    "format": "iri-reference",
-                    "default": "/users/{id}"
-                  }
-                },
-                "required": ["title", "content", "user"],
-                "example": {
-                  "id": 1,
-                  "title": "Porquoi apprendre le css en 2025",
-                  "futuredImage": "post1.png",
-                  "user": "/users/1",
-                  "publishedDate": "17/04/2025",
-                  "content": "En 2025 apprendre le css peut paraitre vue l'avenement de l'IA"
-                }
+                "$ref": "#/components/schemas/Contacts"
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Article creer avec success",
+            "description": "Articcontactle creer avec success",
             "content": {
               "application/json": {
                 "schema": {
