@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { registerUser, loginUser, getProfile, getAllUsers, refreshToken, logoutUser } = require('../controllers/user.controller');
+const { registerUser, loginUser, getProfile, getAllUsers, refreshToken, logoutUser,updateUser } = require('../controllers/user.controller');
 const authenticateUser = require('../middlewares/auth.middleware');
 
 // Routes publiques
@@ -9,12 +9,8 @@ router.post('/refresh-token', refreshToken); // Nouvelle route pour renouveler l
 router.delete('/logout', authenticateUser, logoutUser);
 
 // Route protégée
+router.patch("/:id",authenticateUser, updateUser);
 router.get('/me', authenticateUser, getProfile); // Récupérer les infos de l'utilisateur connecté
-
-router.get("/test-cookies", (req, res) => {
-  console.log("Cookies reçus :", req.cookies);
-  res.status(200).json(req.cookies);
-});
 
 router.get("/", getAllUsers);
 

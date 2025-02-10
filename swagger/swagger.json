@@ -161,7 +161,33 @@
         "tags": ["Utilisateurs"],
         "summary": "Mettre a jour un utilisateur",
         "description": "Mettre a jour un utilisateur selon son ID",
-        "operationId": "updateUser"
+        "operationId": "updateUser",
+        "requestBody": {
+          "required": true,
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "description": "ID de l'utilisateur à mettre à jour",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/contacts": {

@@ -1,6 +1,7 @@
 const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const mongoose = require("mongoose");
 
 const { JWT_SECRET, NODE_ENV } = process.env;
 const domain = NODE_ENV === 'production' ? 'api.myaddressesbook.com' : 'localhost';
@@ -154,6 +155,38 @@ const logoutUser = (req, res) => {
 	}
 };
 
+const updateUser = async (req, res) => {
+	try {
+		const { name, email, password } = req.body;
+		const { id } = req.params;
+
+		// Vérifier si l'ID est un ObjectId valide
+		if (!mongoose.Types.ObjectId.isValid(id)) {
+			return res.status(400).json({ success: false, message: "ID utilisateur invalide" });
+		}
+
+		// Préparer l'objet de mise à jour
+		const updateFields = { name, email };
+
+		// Hacher le mot de passe s'il est fourni
+		if (password) {
+			const salt = await bcrypt.genSalt(10);
+			updateFields.password = await bcrypt.hash(password, salt);
+		}
+
+		// Mettre à jour l'utilisateur
+		const user = await User.findByIdAndUpdate(id, updateFields, { new: true, runValidators: true });
+
+		if (!user) {
+			return res.status(404).json({ success: false, message: "Utilisateur non trouvé" });
+		}
+
+		res.status(200).json({ success: true, message: "Utilisateur mis à jour", data: user });
+	} catch (error) {
+		res.status(500).json({ success: false, message: "Erreur lors de la mise à jour", error: error.message });
+	}
+};
+
 module.exports = {
 	registerUser,
 	loginUser,
@@ -161,4 +194,5 @@ module.exports = {
 	getAllUsers,
 	refreshToken,
 	logoutUser,
+	updateUser
 };
